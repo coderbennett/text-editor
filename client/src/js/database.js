@@ -14,15 +14,16 @@ const initdb = async () =>
 
 export const putDb = async (content) => {
   console.log('Add content to the database');
-
   // here we are creating a connection to the jate database using version 1
   const jateDb = await openDB('jate', 1);
   // this is creating a new transaction with the jate database with readwrite privileges
   const tx = jateDb.transaction('jate', 'readwrite');
   // this opens the object store for the jate db
   const store = tx.objectStore('jate');
-  // the .add method will add the content to the store
-  const request = store.add({ content: content });
+  // we should clear out the store so we only have the most up to date content in the object store
+  store.clear();
+  // the .put method will set the content of the store to the content passed here
+  const request = store.put({ content: content });
   
   const result = await request;
   console.log('content saved to the database', result);
